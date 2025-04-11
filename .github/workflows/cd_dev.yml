@@ -1,0 +1,21 @@
+name: Deploy to dev
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  redeploy:
+    name: Deploying to dev
+    
+    steps:
+      - name: SSH into server
+      - run:  |
+          echo ${{secrets.SSH_PRIVATE_KEY_DEV }} &> ~/ssh_key
+          ssh -i ~/ssh_key root@13.239.225.118
+          cd Monorepo-Deployment && git pull
+          pnpm install
+          pnpm run build
+          pm2 restart http-server
+          pm2 restart web-server
+          pm2 restart ws-server
