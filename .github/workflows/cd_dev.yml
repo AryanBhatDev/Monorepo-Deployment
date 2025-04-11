@@ -10,8 +10,9 @@ jobs:
     
     steps:
       - run:  |
-          echo "${{secrets.SSH_PRIVATE_KEY_DEV }}" &> ~/ssh_key
-          echo "yes" | ssh -i ~/ssh_key root@13.239.225.118
+          echo "${{ secrets.SSH_PRIVATE_KEY_DEV }}" &> ~/ssh_key
+          echo "${{ secrets.KNOWN_HOSTS }}" &> ~/.ssh/known_hosts
+          ssh -i ~/ssh_key root@13.239.225.118
           cd Monorepo-Deployment && git pull
           pnpm install
           pnpm run build
